@@ -1,2 +1,2 @@
 # k8s-installer
-Install Kubernetes Cluster on CentOS7 using kubeadm.
+Install Kubernetes(k8s) Cluster on CentOS 7 using Kubeadm.
