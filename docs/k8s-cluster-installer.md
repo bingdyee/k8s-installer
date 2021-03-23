@@ -87,7 +87,6 @@ EOF
 
 yum clean all
 yum makecache -y
-yum repolist all
 ```
 
 ### Step 7: Install Kubernetes
