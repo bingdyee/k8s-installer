@@ -1,5 +1,12 @@
 # 安装 Kubernetes 集群
 
+## 机器配置要求
+| 主机名 | IP地址 | CPU | RAM | HD | 备注 |
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| k8s-master | 192.168.137.30 | 2C | 2G | 50G |
+| k8s-worker1 | 192.168.137.31 | 2C | 2G | 50G |
+| k8s-worker2 | 192.168.137.32 | 2C | 2G | 50G |
+
 ## 在所有节点中执行以下操作
 
 ### Step 1: 环境设置
@@ -92,7 +99,6 @@ sudo systemctl enable --now kubelet
 sudo hostnamectl set-hostname k8s-master
 
 sudo firewall-cmd --permanent --add-masquerade \
-  && firewall-cmd --permanent --add-port=443/tcp \
   && firewall-cmd --permanent --add-port=6443/tcp \
   && firewall-cmd --permanent --add-port=2379-2380/tcp \
   && firewall-cmd --permanent --add-port=10250/tcp \
@@ -212,11 +218,58 @@ sudo systemctl enable docker
 sudo systemctl start docker
 ```
 
-## 安装 Ingress
-```yaml
+## 安装 Helm
+[Helm](https://helm.sh/zh/docs/intro/using_helm/)
+[Download Helm](https://get.helm.sh/helm-v3.5.3-linux-amd64.tar.gz)
+
+```shell
+# 下载安装
+tar zxf helm-v3.5.3-linux-amd64.tar.gz
+mv linux-amd64/helm /usr/local/bin/helm
+
+# 配置仓库
+helm repo list
+# 添加
+helm repo add $repo_name $repo_url
+# 删除
+helm repo remove $repo_name
+
+helm repo add ali-stable https://kubernetes.oss-cn-hangzhou.aliyuncs.com/charts
+helm repo update
 
 
+# 使用 Helm
+# helm search repo 名称
+# helm install 安装名称 搜索名称
 
+helm search repo weave
+helm install ui stable/weave
+
+# 查看安装状态
+helm list
+helm status
+
+kubectl edit svc ui-weave-scope
+
+# 创建 chart
+helm create chart名称
+
+# 安装 chart
+helm install 名称 chart名称
+
+# 升级
+helm upgrade chart名称
+
+```
+
+## 安装 NFS
+```shell
+sudo yum install -y nfs-utils
+
+# 设置挂载路径
+vi /etc/exports
+
+systemctl start nfs
 ```
 
 ## 问题排查
