@@ -172,10 +172,14 @@ sudo hostnamectl set-hostname k8s-worker1
 sudo firewall-cmd --permanent --add-port=30000-32767/tcp \
  && firewall-cmd --permanent --add-port=10250/tcp \
  && firewall-cmd --reload
+```
 
+### Step 2: 加入集群
+```shell
 kubeadm join 192.168.137.30:6443 --token abcdef.0123456789abcdef \
     --discovery-token-ca-cert-hash sha256:b05e8dc6f7d333794d5bdc802b5bf5a7b0ee4e13ddee732fc6c4094853aae2d2
 
+# 启用 kubectl
 mkdir -p $HOME/.kube
 scp k8s-master:$HOME/.kube/config $HOME/.kube
 ```
