@@ -39,7 +39,7 @@ sudo swapoff -a
 
 ```
 
-### Step 2: 安装容器运行时
+### Step 2: 安装容器运行时（containerd）
 ```shell
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
@@ -183,6 +183,32 @@ kubeadm join 192.168.137.30:6443 --token abcdef.0123456789abcdef \
 mkdir -p $HOME/.kube
 scp k8s-master:$HOME/.kube/config $HOME/.kube
 ```
+
+## 使用Docker容器运行时
+```shell
+sudo yum install -y yum-utils device-mapper-persistent-data lvm2
+sudo yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo
+sudo yum install -y docker-ce-19.03.15 docker-ce-cli-19.03.15 containerd.io-1.4.4
+mkdir -p /etc/docker
+
+# "registry-mirrors": ["https://sqx5pgui.mirror.aliyuncs.com"]
+sudo cat > /etc/docker/daemon.json <<EOF
+{
+  "exec-opts": ["native.cgroupdriver=systemd"],
+  "log-driver": "json-file",
+  "log-opts": {
+    "max-size": "100m"
+  },
+  "storage-driver": "overlay2"
+}
+EOF
+
+sudo mkdir -p /etc/systemd/system/docker.service.d
+sudo systemctl daemon-reload
+sudo systemctl enable docker
+sudo systemctl start docker
+```
+
 
 ## 问题排查
 ```shell
