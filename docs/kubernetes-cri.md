@@ -77,6 +77,7 @@ EOF
 
 yum clean all && yum makecache -y
 
+# 安装 kubeadm、kubelet、kubectl
 sudo yum install -y kubelet-1.20.5 kubeadm-1.20.5 kubectl-1.20.5 --disableexcludes=kubernetes
 sudo systemctl enable --now kubelet
 ```
@@ -98,7 +99,7 @@ sudo firewall-cmd --permanent --add-masquerade \
   && firewall-cmd --reload
 ```
 
-### Step 2: 安装 kubeadm、kubelet、kubectl
+### Step 2: 初始化主节点
 ```shell
 # kubeadm config print init-defaults > kubeadm-config.yaml
 sudo cat <<EOF > kubeadm-config.yaml
@@ -146,10 +147,7 @@ kind: KubeletConfiguration
 apiVersion: kubelet.config.k8s.io/v1beta1
 cgroupDriver: systemd
 EOF
-```
 
-### Step 3: 初始化主节点
-```shell
 kubeadm init --config kubeadm-config.yaml
 
 mkdir -p $HOME/.kube
@@ -160,7 +158,7 @@ sudo chown $(id -u):$(id -g) $HOME/.kube/config
 #    --discovery-token-ca-cert-hash sha256:b05e8dc6f7d333794d5bdc802b5bf5a7b0ee4e13ddee732fc6c4094853aae2d2
 ```
 
-### Step 4: 安装集群网络
+### Step 3: 安装集群网络
 ```shell
 kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
 ```
