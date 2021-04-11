@@ -37,6 +37,9 @@ sudo sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 sudo sed -i '/swap/d' /etc/fstab
 sudo swapoff -a
 
+sudo firewall-cmd --permanent --add-port=80/tcp \
+ && firewall-cmd --permanent --add-port=443/tcp \
+ && firewall-cmd --reload
 ```
 
 ### Step 2: 安装容器运行时（containerd）
@@ -209,6 +212,12 @@ sudo systemctl enable docker
 sudo systemctl start docker
 ```
 
+## 安装 Ingress
+```yaml
+
+
+
+```
 
 ## 问题排查
 ```shell
@@ -242,6 +251,8 @@ kubectl label nodes $node_name node-role.kubernetes.io/node=
 
 # 主节点不负载
 kubectl taint nodes k8s-master node-role.kubernetes.io/master=true:NoSchedule
+
+kubectl get po -n ingress-nginx -o wide
 
 ## 手动拉取基本镜像
 crictl pull registry.aliyuncs.com/google_containers/kube-proxy:v1.20.5
