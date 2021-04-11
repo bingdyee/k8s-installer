@@ -42,24 +42,21 @@ sudo systemctl start docker
 ## Step 4: Configure Firewall
 
 ```shell
-sudo firewall-cmd --zone=public --add-masquerade --permanent
-sudo firewall-cmd --zone=public --add-port=8443/tcp --permanent
-sudo firewall-cmd --zone=public --add-port=10250/tcp --permanent
-sudo firewall-cmd --zone=public --add-port=30000-32767/tcp --permanent
+sudo firewall-cmd --add-masquerade --permanent
+sudo firewall-cmd --add-port=8443/tcp --permanent
+sudo firewall-cmd --add-port=10250/tcp --permanent
+sudo firewall-cmd --add-port=30000-32767/tcp --permanent
 sudo firewall-cmd --reload
-
-sudo yum -y install conntrack socat
-
-
-# KUBE_VERSION=curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
-yum -y install kubectl-$KUBE_VERSION
 ```
 
 ## Step 5: Install conntrack、socat、kubectl
 
 ```shell
-# KUBE_VERSION=curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
-sudo yum -y install conntrack socat kubectl-$KUBE_VERSION
+sudo yum -y install conntrack socat
+
+KUBE_VERSION=curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt
+curl -LO https://dl.k8s.io/release/$KUBE_VERSION/bin/linux/amd64/kubectl
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
 kubectl version --client -o json
 ```
 
@@ -80,4 +77,7 @@ minikube start --driver=none \
 	
 kubectl get nodes
 ```
+
+https://kubernetes.io/zh/docs/tasks/tools/install-kubectl/
+https://minikube.sigs.k8s.io/docs/start/
 
